@@ -1,4 +1,4 @@
-# splitRadixFft
+# split-radix-fft
 A small lib for computing the real or complex fft for 1D arrays of radix2 length
 
 This repo contains code for implementing the split radix conjugate pair fft algorithm. The code does not allocate memory, hence, the user is required to pass the required data-structures to the functions. The functions are stand-alone and can be used as is or wrapped in a class if that is desired.

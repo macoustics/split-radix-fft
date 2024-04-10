@@ -5,7 +5,7 @@ This repo contains code for implementing the split radix conjugate pair fft algo
 
 This fft is not particularly fast and just provide base-cases for size 1, 2, 4, and 8.
 
-# options:
+## Options:
 - cfftForward: Perform the fft assuming complex valued input sequence.
 - cfftInverse: Perform the inverse fft assuming complex valued output sequence. Note that this inverse is not normalized. If a normalized inverse is desired, divide the result by the length of the sequence.
 - populateCfftTwiddles: Calculates the twiddle factors for the cfft transforms.
@@ -16,6 +16,22 @@ This fft is not particularly fast and just provide base-cases for size 1, 2, 4, 
 
 
 
-# Known issues:
+## Known issues:
  - The code was originally intended for std::array and then converted to pointer-based inputs, without type checking. As such, the code is unsafe and will segfault if the size of the input arguments is too small.
  - The rfftInverse() function will use the input spectrum as the temporary scratch space, i.e., the input spectrum will be overwritten!
+
+## Development:
+In order to further develop the `split-radix-fft`, we provide a docker build environment. To build the container:
+```bash
+./build.sh -d
+```
+To build the code:
+```bash
+./build.sh
+```
+To run the tests:
+```bash
+./build.sh -t 
+```
+
+

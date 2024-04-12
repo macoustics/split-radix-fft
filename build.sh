@@ -1,12 +1,19 @@
 #!/bin/bash
+set -e
+
+LOCAL=1
 
 # Shell
 shell() {
-    docker run \
-        -it \
-        -v $(pwd):/workspace/ \
-        split-radix-fft-dev:latest \
+    if [ $LOCAL -eq 1 ]; then
         $@
+    else
+        docker run \
+            -it \
+            -v $(pwd):/workspace/ \
+            split-radix-fft-dev:latest \
+            $@
+    fi
 }
 
 # Function to perform a standard build
@@ -17,7 +24,8 @@ build_normal() {
             -B .build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DBUILD_TESTS_SPLIT_RADIX_FFT=ON
+            -DBUILD_TESTS_SPLIT_RADIX_FFT=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
     shell cmake --build .build
 }
 

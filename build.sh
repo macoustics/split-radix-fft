@@ -1,9 +1,10 @@
 #!/bin/bash
 set -e
 
+
 # Shell
 shell() {
-    if [ $LOCAL -eq 1 ]; then
+    if [ $LOCAL ]; then
         $@
     else
         docker run \

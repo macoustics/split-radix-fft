@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-LOCAL=1
-
 # Shell
 shell() {
     if [ $LOCAL -eq 1 ]; then

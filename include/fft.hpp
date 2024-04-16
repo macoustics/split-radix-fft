@@ -258,9 +258,10 @@ FFTSTATUS performRfftForward(const std::size_t nfft,
 template <typename T>
 FFTSTATUS
 performRfftBackward(const std::size_t nfft, std::complex<T>* twiddleFactors,
-                    const std::size_t twiddleFactorSize, std::complex<T>* in,
-                    const std::size_t inSize, T* out, const std::size_t outSize,
-                    std::complex<T>* scratch, std::size_t scratchSize)
+                    const std::size_t twiddleFactorSize,
+                    const std::complex<T>* in, const std::size_t inSize, T* out,
+                    const std::size_t outSize, std::complex<T>* scratch0,
+                    std::complex<T>* scratch1, std::size_t scratchSize)
 {
     if (nfft != twiddleFactorSize) {
         return FFTSTATUS::INVALID_SIZE;
@@ -290,12 +291,31 @@ performRfftBackward(const std::size_t nfft, std::complex<T>* twiddleFactors,
         return FFTSTATUS::NULL_POINTER;
     }
 
-    if (scratch == nullptr) {
+    if (scratch0 == nullptr) {
         return FFTSTATUS::NULL_POINTER;
     }
 
-    internal::rfftInverse<T>(in, scratch, out, twiddleFactors, nfft);
+    if (scratch1 == nullptr) {
+        return FFTSTATUS::NULL_POINTER;
+    }
+
+    internal::rfftInverse<T>(in, scratch0, scratch1, out, twiddleFactors, nfft);
 
     return FFTSTATUS::OK;
+}
+
+template <typename T>
+FFTSTATUS
+performRfftBackward(const std::size_t nfft, std::complex<T>* twiddleFactors,
+                    const std::size_t twiddleFactorSize, std::complex<T>* in,
+                    const std::size_t inSize, T* out, const std::size_t outSize,
+                    std::complex<T>* scratch, std::size_t scratchSize)
+{
+    FFTSTATUS status;
+    status =
+        performRfftBackward<T>(nfft, twiddleFactors, twiddleFactorSize, in,
+                               inSize, out, outSize, in, scratch, scratchSize);
+
+    return status;
 }
 } // namespace fft

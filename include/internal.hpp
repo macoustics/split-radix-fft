@@ -324,8 +324,9 @@ void rfftForward(const T* inputRealSequence,
 }
 
 template <typename T>
-void rfftInverse(std::complex<T>* in, std::complex<T>* out,
-                 const std::complex<T>* twiddleFactors, std::size_t nfft)
+void rfftInverse(const std::complex<T>* in, std::complex<T>* scratch,
+                 std::complex<T>* out, const std::complex<T>* twiddleFactors,
+                 std::size_t nfft)
 {
     // Note that this function will overwrite the input!
     using C = std::complex<T>;
@@ -333,14 +334,14 @@ void rfftInverse(std::complex<T>* in, std::complex<T>* out,
     C xEven, xOdd, xEvenInv, xOddInv;
     C j{0, 1};
 
-    in[0].imag(in[nfft / 2].real());
+    scratch[0].imag(in[nfft / 2].real());
     // Handle i = 0 seperately because the Nyquist sample is
     // stored as spectrum[0].imag().
-    xEven.real(T(0.5) * (in[0].real() + in[0].imag()));
+    xEven.real(T(0.5) * (in[0].real() + scratch[0].imag()));
     xEven.imag(0);
-    xOdd.real(T(0.5) * (in[0].real() - in[0].imag()));
+    xOdd.real(T(0.5) * (in[0].real() - scratch[0].imag()));
     xOdd.imag(0);
-    in[0] = xEven + j * xOdd;
+    scratch[0] = xEven + j * xOdd;
     for (std::size_t idx = 1; idx < nfft / 4; ++idx) {
         xEven = T(0.5) * (in[idx] + std::conj(in[nfft / 2 - idx]));
         xOdd = T(0.5) * j * (in[idx] - std::conj(in[nfft / 2 - idx]));
@@ -349,34 +350,35 @@ void rfftInverse(std::complex<T>* in, std::complex<T>* out,
         // Even / Odd entry lookup of the twiddle factors. This is done to reuse
         // the twiddle factors for the cfft of size nfft/2.
         if (idx % 2 == 0) {
-            in[idx] = xEven + xOdd * twiddleFactors[idx / 2];
-            in[nfft / 2 - idx] =
+            scratch[idx] = xEven + xOdd * twiddleFactors[idx / 2];
+            scratch[nfft / 2 - idx] =
                 xEvenInv + xOddInv * twiddleFactors[nfft / 4 - (idx / 2)];
         } else {
-            in[idx] = xEven + xOdd * twiddleFactors[nfft / 2 + idx / 2];
-            in[nfft / 2 - idx] =
+            scratch[idx] = xEven + xOdd * twiddleFactors[nfft / 2 + idx / 2];
+            scratch[nfft / 2 - idx] =
                 xEvenInv +
                 xOddInv * twiddleFactors[nfft / 2 + nfft / 4 - 1 - (idx / 2)];
         }
     }
     xEven = T(0.5) * (in[nfft / 4] + std::conj(in[nfft / 4]));
     xOdd = T(0.5) * j * (in[nfft / 4] - std::conj(in[nfft / 4]));
-    in[nfft / 4] = xEven + xOdd * twiddleFactors[nfft / 8];
+    scratch[nfft / 4] = xEven + xOdd * twiddleFactors[nfft / 8];
 
     // Perform a complex valued FFT of the half-length complex sequence
-    cfftInverse(in, out, twiddleFactors, nfft / 2);
+    cfftInverse(scratch, out, twiddleFactors, nfft / 2);
 }
 
 template <typename T>
-void rfftInverse(std::complex<T>* inputHalfSpectrum,
-                 std::complex<T>* complexInterleavedScratch,
+void rfftInverse(const std::complex<T>* inputHalfSpectrum,
+                 std::complex<T>* complexInterleavedScratchInput,
+                 std::complex<T>* complexInterleavedScratchOutput,
                  T* outputRealSequence, const std::complex<T>* twiddleFactors,
                  const std::size_t nfft)
 {
     // Note that the inputHalfSpectrum will be overwritten!
-    rfftInverse<T>(inputHalfSpectrum, complexInterleavedScratch, twiddleFactors,
-                   nfft);
-    deinterleaveSequence<T>(complexInterleavedScratch, outputRealSequence,
+    rfftInverse<T>(inputHalfSpectrum, complexInterleavedScratchInput,
+                   complexInterleavedScratchOutput, twiddleFactors, nfft);
+    deinterleaveSequence<T>(complexInterleavedScratchOutput, outputRealSequence,
                             nfft);
     for (size_t idx = 0; idx < nfft; idx++) {
         outputRealSequence[idx] /= (T)(nfft / 2);

@@ -12,14 +12,14 @@ This fft is not particularly fast and just provide base-cases for size 1, 2, 4, 
 - populateCfftTwiddleFactorsBackward: Calculates the twiddle factors for the backward cfft transform.
 
 - performRfftForward: Perform the fft assuming real-valued input sequence. The output is the first half of the symmetric half-spectrum of size = nfft/2 + 1, where the value at DC and Nyquist have zero imaginary components.
-- performRfftBackward: Perform the inverse fft assuming a real-valued output sequence. If this option is only provided with a single scratch space this operation overwrites the input half-spectrum an intermediate result.
+- performRfftBackward: Perform the inverse fft assuming a real-valued output sequence. Note that this function requires two scratch spaces.
+- performRfftBackwardWithInputAsScratch: Perform the inverse fft assuming a real-valued output sequence. This function uses the input as one of the two required scratch spaces, which means that the input half-spectrum will be overwritten!
 - populateRfftTwiddleFactorsForward: Calculates the twiddle factors for the forward rfft transform.
 - populateRfftTwiddleFactorsBackward: Calculates the twiddle factors for the backward rfft transform.
 
 
 
 ## Known issues:
- - If a single scratch-space is provided for performRfftBackward(), the function will use the input spectrum as the temporary scratch space, i.e., the input spectrum will be overwritten!
 
 ## Development:
 In order to further develop the `split-radix-fft`, we provide a docker build environment. To build the container:

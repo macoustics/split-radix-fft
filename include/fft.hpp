@@ -305,11 +305,11 @@ performRfftBackward(const std::size_t nfft, std::complex<T>* twiddleFactors,
 }
 
 template <typename T>
-FFTSTATUS
-performRfftBackward(const std::size_t nfft, std::complex<T>* twiddleFactors,
-                    const std::size_t twiddleFactorSize, std::complex<T>* in,
-                    const std::size_t inSize, T* out, const std::size_t outSize,
-                    std::complex<T>* scratch, std::size_t scratchSize)
+FFTSTATUS performRfftBackwardWithInputAsScratch(
+    const std::size_t nfft, std::complex<T>* twiddleFactors,
+    const std::size_t twiddleFactorSize, std::complex<T>* in,
+    const std::size_t inSize, T* out, const std::size_t outSize,
+    std::complex<T>* scratch, std::size_t scratchSize)
 {
     FFTSTATUS status;
     status =

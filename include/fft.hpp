@@ -209,7 +209,7 @@ FFTSTATUS performCfftBackward(const std::size_t nfft,
 template <typename T>
 FFTSTATUS performRfftForward(const std::size_t nfft,
                              std::complex<T>* twiddleFactors,
-                             const std::size_t twiddleFactorSize, T* in,
+                             const std::size_t twiddleFactorSize, const T* in,
                              const std::size_t inSize, std::complex<T>* out,
                              const std::size_t outSize,
                              std::complex<T>* scratch, std::size_t scratchSize)

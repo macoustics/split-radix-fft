@@ -10,6 +10,7 @@ shell() {
         docker run \
             -it \
             -v $(pwd):/workspace/ \
+            -u $(id -u):$(id -g) \
             split-radix-fft-dev:latest \
             $@
     fi

@@ -56,7 +56,7 @@ TEST_CASE("performRfftBackwardFloat::Valid", "[forward]")
     ref[15] = -0.612769159796717;
 
     for (std::size_t i = 0; i < outSize; i++) {
-        REQUIRE(std::fabs(ref[i] - out[i]) < 1e-5f);
+        REQUIRE(std::fabs(ref[i] * float(nfft) - out[i]) < 1e-5f);
     }
 }
 
@@ -260,7 +260,7 @@ TEST_CASE("performRfftBackwardDouble::Valid", "[forward]")
     ref[15] = -0.612769159796717;
 
     for (std::size_t i = 0; i < outSize; i++) {
-        REQUIRE(std::fabs(ref[i] - out[i]) < 1e-5f);
+        REQUIRE(std::fabs(ref[i] * float(nfft) - out[i]) < 1e-5f);
     }
 }
 
@@ -319,7 +319,7 @@ TEST_CASE("performRfftBackwardDoubleDualScratch::Valid", "[forward]")
     ref[15] = -0.612769159796717;
 
     for (std::size_t i = 0; i < outSize; i++) {
-        REQUIRE(std::fabs(ref[i] - out[i]) < 1e-5f);
+        REQUIRE(std::fabs(ref[i] * float(nfft) - out[i]) < 1e-5f);
     }
 }
 

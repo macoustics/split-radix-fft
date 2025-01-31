@@ -1,15 +1,15 @@
-#include "fft.hpp"
+#include "splitradixfft.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
 
 TEST_CASE("performRfftBackwardFloat::Valid", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -30,10 +30,10 @@ TEST_CASE("performRfftBackwardFloat::Valid", "[forward]")
     in[7] = std::complex<float>(1.08562991661114, 0.8279034049432613);
     in[8] = std::complex<float>(-1.4412059704510114, 0.0);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, out.get(), outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t refSize = nfft / 2 + 1;
     auto ref = std::make_unique<float[]>(outSize);
@@ -62,12 +62,12 @@ TEST_CASE("performRfftBackwardFloat::Valid", "[forward]")
 
 TEST_CASE("performRfftBackwardFloat::InvalidTwiddleSize", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -78,21 +78,21 @@ TEST_CASE("performRfftBackwardFloat::InvalidTwiddleSize", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<float>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, twiddleFactors.get(), nfft - 1, in.get(), inSize, out.get(),
         outSize, scratch.get(), scratchSize);
 
-    REQUIRE(err == fft::FFTSTATUS::INVALID_SIZE);
+    REQUIRE(err == splitradixfft::FFTSTATUS::INVALID_SIZE);
 }
 
 TEST_CASE("performRfftBackwardFloat::InvalidInputSize", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -103,21 +103,21 @@ TEST_CASE("performRfftBackwardFloat::InvalidInputSize", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<float>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize - 1, out.get(),
         outSize, scratch.get(), scratchSize);
 
-    REQUIRE(err == fft::FFTSTATUS::INVALID_SIZE);
+    REQUIRE(err == splitradixfft::FFTSTATUS::INVALID_SIZE);
 }
 
 TEST_CASE("performRfftBackwardFloat::InvalidOutputSize", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -128,20 +128,20 @@ TEST_CASE("performRfftBackwardFloat::InvalidOutputSize", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<float>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, out.get(),
         outSize - 1, scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::INVALID_SIZE);
+    REQUIRE(err == splitradixfft::FFTSTATUS::INVALID_SIZE);
 }
 
 TEST_CASE("performRfftBackwardFloat::NullTwiddle", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -152,20 +152,20 @@ TEST_CASE("performRfftBackwardFloat::NullTwiddle", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<float>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, nullptr, nfft, in.get(), inSize, out.get(), outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::NULL_POINTER);
+    REQUIRE(err == splitradixfft::FFTSTATUS::NULL_POINTER);
 }
 
 TEST_CASE("performRfftBackwardFloat::NullInput", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -176,20 +176,20 @@ TEST_CASE("performRfftBackwardFloat::NullInput", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<float>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, twiddleFactors.get(), nfft, nullptr, inSize, out.get(), outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::NULL_POINTER);
+    REQUIRE(err == splitradixfft::FFTSTATUS::NULL_POINTER);
 }
 
 TEST_CASE("performRfftBackwardFloat::NullOutput", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<float>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<float>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<float>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<float>[]>(inSize);
@@ -200,20 +200,20 @@ TEST_CASE("performRfftBackwardFloat::NullOutput", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<float>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<float>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<float>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, nullptr, outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::NULL_POINTER);
+    REQUIRE(err == splitradixfft::FFTSTATUS::NULL_POINTER);
 }
 
 TEST_CASE("performRfftBackwardDouble::Valid", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -234,10 +234,10 @@ TEST_CASE("performRfftBackwardDouble::Valid", "[forward]")
     in[7] = std::complex<double>(1.08562991661114, 0.8279034049432613);
     in[8] = std::complex<double>(-1.4412059704510114, 0.0);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, out.get(), outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t refSize = nfft / 2 + 1;
     auto ref = std::make_unique<double[]>(outSize);
@@ -266,12 +266,12 @@ TEST_CASE("performRfftBackwardDouble::Valid", "[forward]")
 
 TEST_CASE("performRfftBackwardDoubleDualScratch::Valid", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -293,10 +293,10 @@ TEST_CASE("performRfftBackwardDoubleDualScratch::Valid", "[forward]")
     in[7] = std::complex<double>(1.08562991661114, 0.8279034049432613);
     in[8] = std::complex<double>(-1.4412059704510114, 0.0);
 
-    err = fft::performRfftBackward<double>(
+    err = splitradixfft::performRfftBackward<double>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, out.get(), outSize,
         scratch0.get(), scratch1.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t refSize = nfft / 2 + 1;
     auto ref = std::make_unique<double[]>(outSize);
@@ -325,12 +325,12 @@ TEST_CASE("performRfftBackwardDoubleDualScratch::Valid", "[forward]")
 
 TEST_CASE("performRfftBackwardDouble::InvalidTwiddleSize", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -341,21 +341,21 @@ TEST_CASE("performRfftBackwardDouble::InvalidTwiddleSize", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<double>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, twiddleFactors.get(), nfft - 1, in.get(), inSize, out.get(),
         outSize, scratch.get(), scratchSize);
 
-    REQUIRE(err == fft::FFTSTATUS::INVALID_SIZE);
+    REQUIRE(err == splitradixfft::FFTSTATUS::INVALID_SIZE);
 }
 
 TEST_CASE("performRfftBackwardDouble::InvalidInputSize", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -366,21 +366,21 @@ TEST_CASE("performRfftBackwardDouble::InvalidInputSize", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<double>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize - 1, out.get(),
         outSize, scratch.get(), scratchSize);
 
-    REQUIRE(err == fft::FFTSTATUS::INVALID_SIZE);
+    REQUIRE(err == splitradixfft::FFTSTATUS::INVALID_SIZE);
 }
 
 TEST_CASE("performRfftBackwardDouble::InvalidOutputSize", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -391,20 +391,20 @@ TEST_CASE("performRfftBackwardDouble::InvalidOutputSize", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<double>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, out.get(),
         outSize - 1, scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::INVALID_SIZE);
+    REQUIRE(err == splitradixfft::FFTSTATUS::INVALID_SIZE);
 }
 
 TEST_CASE("performRfftBackwardDouble::NullTwiddle", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -415,20 +415,20 @@ TEST_CASE("performRfftBackwardDouble::NullTwiddle", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<double>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, nullptr, nfft, in.get(), inSize, out.get(), outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::NULL_POINTER);
+    REQUIRE(err == splitradixfft::FFTSTATUS::NULL_POINTER);
 }
 
 TEST_CASE("performRfftBackwardDouble::NullInput", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -439,20 +439,20 @@ TEST_CASE("performRfftBackwardDouble::NullInput", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<double>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, twiddleFactors.get(), nfft, nullptr, inSize, out.get(), outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::NULL_POINTER);
+    REQUIRE(err == splitradixfft::FFTSTATUS::NULL_POINTER);
 }
 
 TEST_CASE("performRfftBackwardDouble::NullOutput", "[forward]")
 {
-    fft::FFTSTATUS err;
+    splitradixfft::FFTSTATUS err;
     const std::size_t nfft = 16;
     auto twiddleFactors = std::make_unique<std::complex<double>[]>(nfft);
-    err = fft::populateRfftTwiddleFactorsBackward<double>(
+    err = splitradixfft::populateRfftTwiddleFactorsBackward<double>(
         nfft, twiddleFactors.get(), nfft);
-    REQUIRE(err == fft::FFTSTATUS::OK);
+    REQUIRE(err == splitradixfft::FFTSTATUS::OK);
 
     const std::size_t inSize = nfft / 2 + 1;
     auto in = std::make_unique<std::complex<double>[]>(inSize);
@@ -463,8 +463,8 @@ TEST_CASE("performRfftBackwardDouble::NullOutput", "[forward]")
     const std::size_t scratchSize = nfft / 2 + 1;
     auto scratch = std::make_unique<std::complex<double>[]>(scratchSize);
 
-    err = fft::performRfftBackwardWithInputAsScratch<double>(
+    err = splitradixfft::performRfftBackwardWithInputAsScratch<double>(
         nfft, twiddleFactors.get(), nfft, in.get(), inSize, nullptr, outSize,
         scratch.get(), scratchSize);
-    REQUIRE(err == fft::FFTSTATUS::NULL_POINTER);
+    REQUIRE(err == splitradixfft::FFTSTATUS::NULL_POINTER);
 }

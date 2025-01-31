@@ -23,7 +23,7 @@
  *
  * ==============================================================================
  *
- * fft.hpp
+ * splitradixfft.hpp
  * Simple library for an fft. By composition of the algorithm, the rfft is by
  * default normalized but the cfft is currently not normalized.
  *
@@ -33,7 +33,7 @@
 #pragma once
 #include <complex>
 
-namespace fft {
+namespace splitradixfft {
 /*
  * ==============================================================================
  *
@@ -675,4 +675,4 @@ FFTSTATUS performRfftBackwardWithInputAsScratch(
 
     return status;
 }
-} // namespace fft
+} // namespace splitradixfft
